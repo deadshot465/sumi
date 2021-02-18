@@ -27,3 +27,5 @@ sumi-*.tar
 /tmp
 
 /config
+**/*/.DS_Store
+.DS_Store
