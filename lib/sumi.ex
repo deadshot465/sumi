@@ -32,13 +32,13 @@ defmodule Sumi do
       "s?ping" ->
         start_time = Time.utc_now(Calendar.ISO)
         task = Task.async fn ->
-          Api.create_message(msg.channel_id, "🏓 Pinging...")
+          Api.create_message!(msg.channel_id, "🏓 Pinging...")
         end
         message = Task.await(task)
         end_time = Time.utc_now(Calendar.ISO)
-        difference = Time.diff(start_time, end_time, :millisecond)
+        difference = Time.diff(end_time, start_time, :millisecond)
         Task.start fn ->
-          Api.edit_message(message, content: "🏓 Pong!\nLatency is: #{difference}.")
+          Api.edit_message(message, content: "🏓 Pong!\nLatency is: #{difference}ms.")
         end
       "s?about" ->
         Task.start fn ->
