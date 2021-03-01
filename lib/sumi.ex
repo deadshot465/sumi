@@ -34,7 +34,7 @@ defmodule Sumi do
 
   def handle_event({:READY, _map, _ws_state}) do
     Task.start fn ->
-      Api.update_status(:online, "Soccer", 0, nil)
+      Api.update_status(:online, Enum.random(@presences), 0, nil)
       update_presence()
     end
   end
