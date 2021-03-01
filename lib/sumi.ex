@@ -13,6 +13,7 @@ defmodule Sumi do
   @moduledoc """
   Documentation for `Sumi`.
   """
+  @presences ["Soccer", "Eating fried chicken", "Finding Haru", "Sleeping", "Studying"]
 
   use Nostrum.Consumer
   alias Nostrum.Api
@@ -21,9 +22,20 @@ defmodule Sumi do
     Consumer.start_link(__MODULE__)
   end
 
+  def update_presence do
+    Task.start fn ->
+      :timer.sleep(:timer.hours(1))
+      Api.update_status(:online, Enum.random(@presences))
+      Task.start fn ->
+        update_presence()
+      end
+    end
+  end
+
   def handle_event({:READY, _map, _ws_state}) do
     Task.start fn ->
       Api.update_status(:online, "Soccer", 0, nil)
+      update_presence()
     end
   end
 
@@ -48,7 +60,7 @@ defmodule Sumi do
           |> put_description(description)
           |> put_thumbnail("https://cdn.discordapp.com/emojis/291709559477895169.png")
           |> put_author("Sumi from The Monster of Memory", "", "https://cdn.discordapp.com/avatars/806706183637041192/e53034dfdfc40f778330ac55830f6da6.webp?size=1024")
-          |> put_footer("Sumi Bot: Release 0.1 | 2021-02-07")
+          |> put_footer("Sumi Bot: Release 0.2 | 2021-03-01")
           Api.create_message(msg.channel_id, embed: embed)
         end
       _ ->
