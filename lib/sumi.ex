@@ -73,7 +73,15 @@ defmodule Sumi do
           Api.create_message(msg.channel_id, embed: embed)
         end
       _ ->
-        :ignore
+        cond do
+          String.starts_with?(msg.content, "s?owoify") ->
+            command_length = String.length("s?owoify") + 1
+            content = String.split_at(msg.content, command_length)
+            |> Tuple.to_list()
+            |> Enum.at(1)
+            Api.create_message(msg.channel_id, content: OwoifyEx.owoify(content))
+          true -> :ignore
+        end
     end
   end
 
