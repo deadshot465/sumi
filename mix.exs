@@ -24,7 +24,6 @@ defmodule Sumi.MixProject do
     [
       {:httpoison, "~> 1.8"},
       {:jason, "~> 1.2"},
-      {:mojito, "~> 0.7.7"},
       {:nostrum, "~> 0.4"},
       {:owoify_ex, "~> 0.1"}
     ]
