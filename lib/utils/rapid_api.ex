@@ -67,27 +67,31 @@ defmodule Utils.RapidAPI do
         |> Base.decode64!()
         { member_name, member_icon } = Utils.Util.get_username_icon(msg.guild_id, msg.author.id)
         description = "やった！これは#{member_name}のコードの解釈結果だ！兄さんにも共有したいな！\n```bash\n#{stdout}\n```"
-        embed = %Nostrum.Struct.Embed{}
-        |> put_color(Utils.Util.get_sumi_color)
-        |> put_description(description)
-        |> put_thumbnail(Utils.Util.get_elixir_logo)
-        |> put_author(member_name, "", member_icon)
-        |> put_field("費やす時間", "#{body["time"]} 秒", true)
-        |> put_field("メモリー", "#{body["memory"]} KB", true)
-
-        embed = if body["exit_code"] != nil && body["exit_code"] != "" do
-          put_field(embed, "エグジットコード", "#{body["exit_code"]}", true)
+        if String.length(description) > 2047 do
+          Api.create_message(msg.channel_id, "ごめん！このコードの解釈結果は長すぎた。俺はどうしようもない。")
         else
-          embed
-        end
+          embed = %Nostrum.Struct.Embed{}
+          |> put_color(Utils.Util.get_sumi_color)
+          |> put_description(description)
+          |> put_thumbnail(Utils.Util.get_elixir_logo)
+          |> put_author(member_name, "", member_icon)
+          |> put_field("費やす時間", "#{body["time"]} 秒", true)
+          |> put_field("メモリー", "#{body["memory"]} KB", true)
 
-        embed = if body["exit_signal"] != nil && body["exit_signal"] != "" do
-          put_field(embed, "エグジットシグナル", "#{body["exit_signal"]}", true)
-        else
-          embed
-        end
+          embed = if body["exit_code"] != nil && body["exit_code"] != "" do
+            put_field(embed, "エグジットコード", "#{body["exit_code"]}", true)
+          else
+            embed
+          end
 
-        Api.create_message(msg.channel_id, embed: embed)
+          embed = if body["exit_signal"] != nil && body["exit_signal"] != "" do
+            put_field(embed, "エグジットシグナル", "#{body["exit_signal"]}", true)
+          else
+            embed
+          end
+
+          Api.create_message(msg.channel_id, embed: embed)
+        end
       end
     end
   end
