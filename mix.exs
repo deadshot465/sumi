@@ -4,7 +4,7 @@ defmodule Sumi.MixProject do
   def project do
     [
       app: :sumi,
-      version: "0.3.0",
+      version: "0.4.0",
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -22,6 +22,9 @@ defmodule Sumi.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:httpoison, "~> 1.8"},
+      {:jason, "~> 1.2"},
+      {:mojito, "~> 0.7.7"},
       {:nostrum, "~> 0.4"},
       {:owoify_ex, "~> 0.1"}
     ]
