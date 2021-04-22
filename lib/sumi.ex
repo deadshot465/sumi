@@ -56,24 +56,26 @@ defmodule Sumi do
 
     prefix = Application.get_env(:sumi, :prefix)
 
-    # Try splitting the content to determine the command to invoke.
-    args = String.split_at(msg.content, String.length(prefix))
-    |> Tuple.to_list()
-    |> Enum.at(1)
-    |> String.split(" ")
-    command = Map.get(@commands, String.to_atom(Enum.at(args, 0)))
-    actual_args = Enum.drop(args, 1)
-    if command != nil do
-      command.(msg, actual_args)
-    else
-      # Determine the command with prefix.
-      first_arg = Enum.at(args, 0)
-      cond do
-        String.starts_with?(first_arg, "eval") ->
-          Task.start(fn ->
-            @commands[:eval].(msg, msg.content)
-          end)
-        true -> :ignore
+    if String.starts_with?(msg.content, prefix) do
+      # Try splitting the content to determine the command to invoke.
+      args = String.split_at(msg.content, String.length(prefix))
+      |> Tuple.to_list()
+      |> Enum.at(1)
+      |> String.split(" ")
+      command = Map.get(@commands, String.to_atom(Enum.at(args, 0)))
+      actual_args = Enum.drop(args, 1)
+      if command != nil do
+        command.(msg, actual_args)
+      else
+        # Determine the command with prefix.
+        first_arg = Enum.at(args, 0)
+        cond do
+          String.starts_with?(first_arg, "eval") ->
+            Task.start(fn ->
+              @commands[:eval].(msg, msg.content)
+            end)
+          true -> :ignore
+        end
       end
     end
   end

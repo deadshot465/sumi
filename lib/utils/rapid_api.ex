@@ -36,10 +36,12 @@ defmodule Utils.RapidAPI do
     body = Jason.decode!(response.body)
     IO.puts("Status code: #{response.status_code}")
     if body["stderr"] != nil && body["stderr"] != "" do
+      stderr = String.trim(body["stderr"]) |> String.replace("\n", "") |> Base.decode64!()
       error_msg = if body["message"] != nil && body["message"] != "" do
-        "ごめん。なんかおかしいことが発生した…兄さんなら何か知っているかも：#{body["stderr"]}\nあと、これは他のメッセージらしい：#{body["message"]}"
+        message = String.trim(body["message"]) |> String.replace("\n", "") |> Base.decode64!()
+        "ごめん。なんかおかしいことが発生した…兄さんなら何か知っているかも：#{stderr}\nあと、これは他のメッセージらしい：#{message}"
       else
-        "ごめん。なんかおかしいことが発生した…兄さんなら何か知っているかも：#{body["stderr"]}"
+        "ごめん。なんかおかしいことが発生した…兄さんなら何か知っているかも：#{stderr}"
       end
       Api.create_message(msg.channel_id, error_msg)
     else
