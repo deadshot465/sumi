@@ -14,16 +14,16 @@ defmodule Commands.Eval do
     end).()
     |> Enum.join("\n")
 
-    header = Utils.RapidAPI.generate_auth_header("judge0-ce.p.rapidapi.com")
+    header = Utils.JudgeZero.generate_auth_header("judge0-ce.p.rapidapi.com")
     request_data = Jason.encode!(%{
-      language_id: Utils.RapidAPI.get_elixir_lang_id(),
+      language_id: Utils.JudgeZero.get_elixir_lang_id(),
       source_code: Base.encode64(code)
     })
-    response = HTTPoison.post!(@submission_url, request_data, header, Utils.RapidAPI.get_timeout_options())
+    response = HTTPoison.post!(@submission_url, request_data, header, Utils.JudgeZero.get_timeout_options())
     IO.puts("Status code: #{response.status_code}")
     body = Jason.decode!(response.body)
     Task.start(fn ->
-      Utils.RapidAPI.get_eval_result(msg, header, body["token"])
+      Utils.JudgeZero.get_eval_result(msg, header, body["token"])
     end)
   end
 end
